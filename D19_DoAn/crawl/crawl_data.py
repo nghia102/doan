@@ -26,7 +26,7 @@ import pandas as pd
 
 from vnstock import stock_historical_data,listing_companies
 import datetime
-
+import os
 
 
 #crawl data
@@ -53,8 +53,17 @@ data_result['High'] = data_result['High'].astype(float)
 data_result['Low'] = data_result['Low'].astype(float)
 print(data_result)
 print(data_result.info())
-import os
 
+path = ('/').join(os.path.dirname(__file__).split("\\")[:-1])
+data_result.to_csv(path+"\data\data.csv")
+
+path = ('/').join(os.path.dirname(__file__).split("\\")[:-1])
+data_result = pd.read_csv(path+'/data/data.csv')
+
+data_result = data_result.set_index('Date')
+data_result.drop('Unnamed: 0',axis = 1,inplace = True)
+data_result['Difference'] = [data_result['Close'][i]-data_result['Open'][i] for i in range(len(data_result))]
+data_result = data_result.dropna()
 
 path = ('/').join(os.path.dirname(__file__).split("\\")[:-1])
 data_result.to_csv(path+"\data\data.csv")
