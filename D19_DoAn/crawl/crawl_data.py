@@ -33,37 +33,39 @@ import os
 time = datetime.date.today()
 
 list_com = listing_companies()['ticker']
+def crawl(ticker_stock) :
+    data_result = stock_historical_data(ticker_stock, "2010-01-01", str(time), "1D")
+    print(data_result.columns)
 
-data_result = stock_historical_data("QBS", "2010-01-01", str(time), "1D")
-print(data_result.columns)
 
+    #doi ten cot
+    data_result.rename(columns = {'time':'Date','close':'Close','volume':'Volume','open':'Open','high':'High','low':'Low'},inplace=True) 
+    #data_result = pd.Series(data_result.values.flatten())
+    #print(data_result)
+    #chuan hoa kieu du lieu
+    # data_result['Index'] = pd.to_numeric(data_result['Index'].astype(str).str.replace('#','').astype(int))
+    # data_result['Date'] = pd.to_datetime(data_result['Date'].astype(str).str.strip(), format='%Y-%m-%d').to_string()
+    # data_result['Difference'] = pd.to_numeric(data_result['Difference'].astype(str).str.replace('%','').astype(float))
+    data_result['Close'] = data_result['Close'].astype(float)
+    data_result['Volume'] = pd.to_numeric(data_result['Volume'].astype(str).str.replace(',','').astype(int))
+    data_result['Open'] = data_result['Open'].astype(float)
+    data_result['High'] = data_result['High'].astype(float)
+    data_result['Low'] = data_result['Low'].astype(float)
+    print(data_result)
+    print(data_result.info())
 
-#doi ten cot
-data_result.rename(columns = {'time':'Date','close':'Close','volume':'Volume','open':'Open','high':'High','low':'Low'},inplace=True) 
-#data_result = pd.Series(data_result.values.flatten())
-#print(data_result)
-#chuan hoa kieu du lieu
-# data_result['Index'] = pd.to_numeric(data_result['Index'].astype(str).str.replace('#','').astype(int))
-data_result['Date'] = pd.to_datetime(data_result['Date'].astype(str).str.strip(), format='%Y-%m-%d')
-# data_result['Difference'] = pd.to_numeric(data_result['Difference'].astype(str).str.replace('%','').astype(float))
-data_result['Close'] = data_result['Close'].astype(float)
-data_result['Volume'] = pd.to_numeric(data_result['Volume'].astype(str).str.replace(',','').astype(int))
-data_result['Open'] = data_result['Open'].astype(float)
-data_result['High'] = data_result['High'].astype(float)
-data_result['Low'] = data_result['Low'].astype(float)
-print(data_result)
-print(data_result.info())
+    path = ('/').join(os.path.dirname(__file__).split("\\")[:-1])
+    data_result.to_csv(path+"\data\data_json\data"+ticker_stock+".csv")
 
-path = ('/').join(os.path.dirname(__file__).split("\\")[:-1])
-data_result.to_csv(path+"\data\data.csv")
+    path = ('/').join(os.path.dirname(__file__).split("\\")[:-1])
+    data_result = pd.read_csv(path+"\data\data_json\data"+ticker_stock+".csv")
 
-path = ('/').join(os.path.dirname(__file__).split("\\")[:-1])
-data_result = pd.read_csv(path+'/data/data.csv')
+    data_result = data_result.set_index('Date')
+    data_result.drop('Unnamed: 0',axis = 1,inplace = True)
+    data_result['Difference'] = [data_result['Close'][i]-data_result['Open'][i] for i in range(len(data_result))]
+    data_result = data_result.dropna()
 
-data_result = data_result.set_index('Date')
-data_result.drop('Unnamed: 0',axis = 1,inplace = True)
-data_result['Difference'] = [data_result['Close'][i]-data_result['Open'][i] for i in range(len(data_result))]
-data_result = data_result.dropna()
+    path = ('/').join(os.path.dirname(__file__).split("\\")[:-1])
+    data_result.to_json(path+"\data\data_json\data"+ticker_stock+".json")
 
-path = ('/').join(os.path.dirname(__file__).split("\\")[:-1])
-data_result.to_csv(path+"\data\data.csv")
+crawl("QBS")
