@@ -72,7 +72,7 @@ def crawl(ticker_stock) :
         data_result = data_result.dropna()
         # data_result.reset_index(inplace=True)
         path = ('/').join(os.path.dirname(__file__).split("\\")[:-1])
-        data_result.to_json(path+"\data\data_gia\data_"+ticker_stock+".json",orient="records")
+        data_result.to_json(path+"\data\data_gia1\data_"+ticker_stock+".json",orient="records")
     except UnboundLocalError : 
         pass
 
