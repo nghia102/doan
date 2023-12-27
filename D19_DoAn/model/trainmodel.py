@@ -60,10 +60,12 @@ def trainmodel(listxy,ticker) :
     model.fit(x_train,y_train,epochs=100,batch_size=50,verbose=2,callbacks=[best_model])
 from vnstock import stock_historical_data,listing_companies
 list_com = listing_companies()['ticker']
-for i in range(38,len(list_com)) :
+for i in range(0,len(list_com)) :
     try :
         trainmodel(create_model(list_com[i]),list_com[i])
     except IndexError :
+        pass
+    except :
         pass
 # def compare_train_and_test(y_train) :
 #     sc = MinMaxScaler(feature_range=(0,1))
