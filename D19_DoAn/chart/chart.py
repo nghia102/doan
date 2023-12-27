@@ -45,6 +45,57 @@ def candleStick() :
     fig.autofmt_xdate()
     fig.tight_layout()
     
+    
+    def press(event):
+        print('press released from test', event.x, event.y, event.button)
+
+
+    def release(event):
+        print('release released from test', event.x, event.y, event.button)
+
+
+    def keypress(event):
+        print('key down', event.key)
+
+
+    def keyup(event):
+        print('key up', event.key)
+
+
+    def motionnotify(event):
+        print('mouse move to ', event.x, event.y)
+
+
+    def resize(event):
+        print('resize from mpl ', event)
+
+
+    def scroll(event):
+        print('scroll event from mpl ', event.x, event.y, event.step)
+
+
+    def figure_enter(event):
+        print('figure enter mpl')
+
+
+    def figure_leave(event):
+        print('figure leaving mpl')
+
+
+    def close(event):
+        print('closing figure')
+
+
+    fig.canvas.mpl_connect('button_press_event', press)
+    fig.canvas.mpl_connect('button_release_event', release)
+    fig.canvas.mpl_connect('key_press_event', keypress)
+    fig.canvas.mpl_connect('key_release_event', keyup)
+    fig.canvas.mpl_connect('motion_notify_event', motionnotify)
+    fig.canvas.mpl_connect('resize_event', resize)
+    fig.canvas.mpl_connect('scroll_event', scroll)
+    fig.canvas.mpl_connect('figure_enter_event', figure_enter)
+    fig.canvas.mpl_connect('figure_leave_event', figure_leave)
+    fig.canvas.mpl_connect('close_event', close)
     return plt.gcf()
 
 
